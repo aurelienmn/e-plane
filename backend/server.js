@@ -6,7 +6,7 @@ const db = require('./config/db'); // Connexion DB
 const router = require('./router');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5252;
 
 app.use(cors());
 app.use(express.json());

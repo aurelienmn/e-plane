@@ -16,7 +16,8 @@ const getAll = async () => {
                 ) FILTER (WHERE am.id IS NOT NULL), '[]') AS mappings
             FROM api_info ai
             LEFT JOIN api_mapping am ON ai.id = am.api_id
-            GROUP BY ai.id, ai.name_api, ai.base_url;
+            GROUP BY ai.id, ai.name_api, ai.base_url
+            ORDER BY ai.id;
         `);
 
         return result.rows;
