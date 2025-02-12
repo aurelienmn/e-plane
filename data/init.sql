@@ -1,6 +1,14 @@
 -- Suppression des tables si elles existent déjà
 DROP TABLE IF EXISTS api_mapping;
 DROP TABLE IF EXISTS api_info;
+DROP TABLE IF EXISTS adsb_info;
+
+-- Création de la table qui stocke les adsb
+
+CREATE TABLE adsb_info (
+    id SERIAL PRIMARY KEY;
+    base_url VARCHAR(512) NOT NULL;
+);
 
 -- Création de la table qui stocke les API
 CREATE TABLE api_info (
