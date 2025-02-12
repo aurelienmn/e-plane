@@ -13,19 +13,18 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import FlightLandIcon from '@mui/icons-material/FlightLand';
 import { useState } from 'react';
 import { useRouter } from "next/navigation";  
 
-const pages = ['Reserver un billet', 'Suivi de vol', 'Mes reservation'];
-const settings = ['Profil', 'Mes Billets', 'Déconnection'];
+const pages = ['Suivi de vol', 'Map'];
+const settings = ['Profil', 'Mes vols', 'Déconnection'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const [username,setUsername] = useState("Alex")
+  const [username,setUsername] = useState("Aexl")
 
   const router = useRouter(); 
 
@@ -36,21 +35,25 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = (pageClicked : string) => {
+  const changePage = (pageClicked : string) => {
     console.log("Button Clicked:", pageClicked);
   
     // Define route mapping for each page
     const routes = {
       "Reserver un billet": "/reserve",
       "Suivi de vol": "/",
-      "Mes reservation": "/my-reservations",
+      "Map": "/map",
+      "Mes vols" : "/mesVols",
+      "Profil" : "/profil",
     };
   
     // Redirect if the page exists in the routes object
     if (routes[pageClicked]) {
       router.push(routes[pageClicked]);
     }
-    
+
+  }
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
@@ -108,7 +111,7 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => {handleCloseNavMenu() ; changePage(page)}}>
                   <Typography sx={{textAlign: 'center'}}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -119,7 +122,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={() => handleCloseNavMenu(page)}
+                onClick={() => changePage(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -151,9 +154,9 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Link href ={setting.toLowerCase()}>
+                  <Button onClick={() => changePage(setting)}>
                   <Typography sx={{ textAlign: 'center', width:"full"}}>{setting}</Typography>
-                  </Link>
+                  </Button>
                 </MenuItem>
               ))}
               

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {Avatar,Box,Button,Card,CardContent,Container,TextField,Typography,} from "@mui/material";
 
-function page() {
+const Page = () => {
   const [user, setUser] = useState({
     name: "John Doe",
     email: "johndoe@example.com",
@@ -93,4 +93,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

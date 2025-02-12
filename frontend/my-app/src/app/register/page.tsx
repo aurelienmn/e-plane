@@ -1,32 +1,49 @@
-import React from 'react'
-import Link from 'next/link'
+"use client";
 
-function page() {
+import React from "react";
+import Link from "next/link";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+export default function Page() {
+  // Gestion de la soumission du formulaire
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("Formulaire soumis !");
+  };
+
   return (
-    <div className='w-full h-3/4 flex justify-center items-center'>
-        <div className='bg-blue-300 p-4 rounded-xl'>
-            <form action="" className='flex flex-col gap-2 text-white'>
-                <label htmlFor="" className='flex flex-col'>
-                E-mail
-                    <input type="email" required />
-                </label>
+    <Container maxWidth="sm">
+      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+        <Card sx={{ p: 3, boxShadow: 3, borderRadius: 3, width: "100%" }}>
+          <CardContent>
+            <Typography variant="h5" fontWeight="bold" textAlign="center" mb={2}>
+              Inscription
+            </Typography>
 
-                <label htmlFor="" className='flex flex-col'>
-                Username
-                    <input type="text" required />
-                </label>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <TextField label="E-mail" type="email" variant="outlined" required fullWidth />
+              <TextField label="Nom d'utilisateur" type="text" variant="outlined" required fullWidth />
+              <TextField label="Mot de passe" type="password" variant="outlined" required fullWidth />
 
-                <label htmlFor="" className='flex flex-col'>
-                Password
-                  <input type="text" required />
-                </label>
-
-                <button type='submit' className='bg-blue-200 w-20 flex justify-center rounded-full'>Register</button>
-                <Link href="connexion">Login</Link>
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                S'inscrire
+              </Button>
             </form>
-        </div>
-    </div>
-  )
-}
 
-export default page
+            <Typography textAlign="center" mt={2}>
+              Déjà un compte ? <Link href="/connexion" style={{ color: "#1976d2", textDecoration: "none" }}>Se connecter</Link>
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
+  );
+}
