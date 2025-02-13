@@ -13,6 +13,8 @@ import ClockIcon from '@mui/icons-material/QueryBuilderTwoTone';
 //---------------Components----------------------
 import FlightCard from './FlightCard';
 
+import { FlightData } from '../flightData';
+
 function Plane_list({}) {
 
     const [PlanesInfo,setPlaneInfo] = useState(["Japonais","France"])
@@ -29,9 +31,33 @@ function Plane_list({}) {
 //----------------------FRONT---------------------------
   return (
     <div>
-        <Container sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)", 
+        <div className="container">
+        <h1>Liste des Vols</h1>
+        <table id="flightsTable">
+            <thead>
+                <tr>
+                    <th>Numéro de Vol</th>
+                    <th>Départ</th>
+                    <th>Arrivée</th>
+                    <th>Heure</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+       
+        {list}
+    </div>
+  )
+}
+
+export default Plane_list
+
+/*
+ <Container sx={{
             gap: 2,
             alignItems: "center",
             justifyContent: "center",
@@ -59,9 +85,4 @@ function Plane_list({}) {
                             <p>Status</p>
                         </Container>
                     </Container>
-        {list}
-    </div>
-  )
-}
-
-export default Plane_list
+                    */

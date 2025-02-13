@@ -28,7 +28,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
       >
         <Header/>
         {children}
-        <Footer/>
+       
       </body>
     </html>
   );
