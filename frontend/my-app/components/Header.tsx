@@ -17,7 +17,7 @@ import FlightLandIcon from '@mui/icons-material/FlightLand';
 import { useState } from 'react';
 import { useRouter } from "next/navigation";  
 
-const pages = ['Suivi de vol', 'Map'];
+const pages = ['Suivi de vol'];
 const settings = ['Profil', 'Mes vols', 'Déconnection'];
 
 function ResponsiveAppBar() {
@@ -161,7 +161,6 @@ function ResponsiveAppBar() {
               ))}
               
             </Menu>
-            <p>{username}</p>
           </Box> 
           : //-------------------------false--------
           <Box sx={{ flexGrow: 0 }}>

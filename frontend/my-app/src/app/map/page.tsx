@@ -2,16 +2,11 @@
 import React from 'react'
 import { Card , CardContent  } from '@mui/material'
 import ProgressBar from '../../../components/ProgressBar'
+import Map from '../../../components/Map'
 
 function page() {
   return (
-    <>
-      <Card>
-        <CardContent>
-          <ProgressBar/>
-        </CardContent>
-      </Card>
-    </>
+          <Map/>
   )
 }
 
