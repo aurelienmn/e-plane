@@ -24,8 +24,14 @@ const flightsData = [
 
 const FlightsTable = () => {
   const [flights, setFlights] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); 
   const router = useRouter(); // Utilisation correcte avec "use client"
+
+  const HandleSave = (flightData) => {
+    console.log(flightData)
+    localStorage.setItem("flightData", JSON.stringify(flightData));
+    router.push("/map");
+};
 
   useEffect(() => {
     setFlights(flightsData);
@@ -81,7 +87,7 @@ const FlightsTable = () => {
                     {flight.status}
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" onClick={() => router.push(`/map?flightNumber=${flight.flightNumber}&departure=${flight.departure}&arrival=${flight.arrival}&time=${flight.time}&status=${flight.status}`)}>Voir plus</Button>
+                    <Button variant="contained" onClick={() => HandleSave(flight)}>Voir plus</Button>
                   </TableCell>
                 </TableRow>
               ))
