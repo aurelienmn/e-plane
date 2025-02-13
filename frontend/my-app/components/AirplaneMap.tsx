@@ -1,12 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker} from "react-leaflet";
-import { Box , Card, CardContent, Typography, LinearProgress , Fab , Modal , Input , Container } from "@mui/material";
-import AddIcon  from '@mui/icons-material/Add';
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  LinearProgress,
+  Fab,
+  Modal,
+  TextField,
+  Container,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const AirplaneMap = () => {
-  const position = [48.8566, 2.3522]; // Position initiale (Paris)
+    //------------data-----------
+  const [data, setData] = useState(""); //localStorage
+
+  const [position, setPosition] = useState([48.8566, 2.3522]); // Position initiale (Paris)
   const markerRef = useRef(null);
   const [heading, setHeading] = useState(135); // Angle initial
 
@@ -16,8 +29,7 @@ const AirplaneMap = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //data dans le localStorage
-  const [data, setData] = useState("");
+  
 
   // Icône personnalisée
   const airplaneIcon = L.divIcon({
@@ -26,23 +38,39 @@ const AirplaneMap = () => {
     iconSize: [48, 48],
     iconAnchor: [24, 24],
   });
-  
 
   // Animation d'apparition
   useEffect(() => {
     setTimeout(() => {
       const markerElement = markerRef.current?.getElement();
       if (markerElement) {
-        const container = markerElement.querySelector(".airplane-icon-container");
+        const container = markerElement.querySelector(
+          ".airplane-icon-container",
+        );
         if (container) {
           container.style.opacity = "1";
           container.style.transform = "scale(1)";
         }
       }
     }, 300);
+    fetch(`http://localhost:5252/flightsdata/:${data.flight_number}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+        setPosition([data.lat,data.lng])
+        console.log("data from fetch is : ", data);
+        //setLoading(false);
+      })
+      .catch((err) => {
+        console.log("error is : ", err);
+        //setError(err.message);
+      });
   }, []);
-
-
 
   // Mise à jour de la rotation
   useEffect(() => {
@@ -57,7 +85,7 @@ const AirplaneMap = () => {
 
   // Fonction pour tester le changement d'orientation
   useEffect(() => {
-
+    //---------------- Local Storage --------------------------
     const storedData = localStorage.getItem("flightData");
     if (storedData) {
       try {
@@ -69,7 +97,7 @@ const AirplaneMap = () => {
     } else {
       setData("No data found");
     }
-    console.log(data)
+    console.log(data);
 
     const interval = setInterval(() => {
       setHeading((prev) => (prev + 90) % 360); // Rotation toutes les 2s
@@ -78,14 +106,14 @@ const AirplaneMap = () => {
   }, []);
 
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: 'background.paper',
+    bgcolor: "background.paper",
     borderRadius: 10,
-    color:"black",
+    color: "black",
     boxShadow: 24,
 
     p: 4,
@@ -117,7 +145,7 @@ const AirplaneMap = () => {
           .airplane-icon {
             width: 48px;
             height: 48px;
-            background-image: url('https://www.freeiconspng.com/uploads/plane-icon--iconshow-14.png');
+            background-image: url('./img/planeIcon.png');
             background-size: cover;
             transition: transform 1s ease-in-out;
           }
@@ -139,15 +167,25 @@ const AirplaneMap = () => {
       >
         <Card sx={{ textAlign: "center" }} elevation={3}>
           <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>{data.flightNumber}</Typography>
-            <Typography variant="body1" sx={{ marginBottom: 1 }}>
-              {data.departure} → {data.arrival}
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              {data.flight_number}
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ marginBottom: 1 }}>
-              Départ: {data.departureTime} | Arrivée: {data.arrivalTime}
+            <Typography variant="body1" sx={{ marginBottom: 1 }}>
+              {data.dep_iata} → {data.arr_iata}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ marginBottom: 1 }}
+            >
+              Départ: {data.dep_iata} | Arrivée: {data.arr_iata}
             </Typography>
             <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-              <LinearProgress sx={{ flexGrow: 1 }} variant="determinate" value={progress} />
+              <LinearProgress
+                sx={{ flexGrow: 1 }}
+                variant="determinate"
+                value={progress}
+              />
             </Box>
             <Typography
               variant="body2"
@@ -158,28 +196,42 @@ const AirplaneMap = () => {
           </CardContent>
         </Card>
       </Box>
-        <Fab sx={{position:'absolute', right:20 , bottom:20}} onClick={() => {handleOpen()}}>
-            <AddIcon/> 
-        </Fab>
+      <Fab
+        sx={{ position: "absolute", right: 20, bottom: 20 }}
+        onClick={() => {
+          handleOpen();
+        }}
+      >
+        <AddIcon />
+      </Fab>
 
-        {/*-------------------Modal------------------------*/}
-        <Modal
+      {/*-------------------Modal------------------------*/}
+      <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-            <Container sx={{display:'flex', flexFlow:'column',backgroundColor:"gray", padding:4}}>
-                <Input/>
-                <Input/>
-            </Container>
-            <Container>
-                <Input/>
-                <Fab>
-                    <AddIcon/> 
-                </Fab>
-            </Container>
+          <Container
+            sx={{
+              display: "flex",
+              flexFlow: "column",
+              gap: 4,
+              backgroundColor: "gray",
+              borderRadius: 10,
+              padding: 4,
+            }}
+          >
+            <TextField variant="outlined" label="Numéro de Vol" />
+            <TextField variant="outlined" label="Agence" />
+          </Container>
+          <Container>
+            <TextField variant="outlined" />
+            <Fab>
+              <AddIcon />
+            </Fab>
+          </Container>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Text in a modal
           </Typography>

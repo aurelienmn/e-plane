@@ -1,8 +1,14 @@
-import { Card, CardContent, Container, Typography, Button } from "@mui/material";
-import { useRouter } from "next/navigation";  
+import {
+  Card,
+  CardContent,
+  Container,
+  Typography,
+  Button,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
 
 export default function FlightCard() {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <Card sx={{ margin: "auto", padding: 2 }}>
       <CardContent sx={{ display: "flex", flexDirection: "column" }}>
@@ -11,7 +17,7 @@ export default function FlightCard() {
           sx={{
             display: "grid",
             gridTemplateColumns: "repeat(6, 1fr)",
-            gap: 2, 
+            gap: 2,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -40,7 +46,11 @@ export default function FlightCard() {
 
           {/* Colonne 4: Gate */}
           <Container
-            sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
             <Typography variant="body1">Gate</Typography>
           </Container>
@@ -60,7 +70,14 @@ export default function FlightCard() {
             <Typography variant="body1">Status</Typography>
           </Container>
           <Container>
-            <Button variant="contained" onClick={() => {router.push('/map')}}>Voir plus</Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                router.push("/map");
+              }}
+            >
+              Voir plus
+            </Button>
           </Container>
         </Container>
       </CardContent>

@@ -1,12 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function IconPlane() {
-  return (
-    <div>
-        
-      
-    </div>
-  )
+  return <div></div>;
 }
 
-export default IconPlane
+export default IconPlane;

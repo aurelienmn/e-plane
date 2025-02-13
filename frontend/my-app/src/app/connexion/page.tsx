@@ -20,25 +20,59 @@ export default function Page() {
 
   return (
     <Container maxWidth="xs">
-      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
         <Card sx={{ p: 3, boxShadow: 3, borderRadius: 3, width: "100%" }}>
           <CardContent>
-            <Typography variant="h5" fontWeight="bold" textAlign="center" mb={2}>
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              textAlign="center"
+              mb={2}
+            >
               Connexion
             </Typography>
 
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <TextField label="E-mail" type="email" variant="outlined" required fullWidth />
-              <TextField label="Mot de passe" type="password" variant="outlined" required fullWidth />
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
+              <TextField
+                label="E-mail"
+                type="email"
+                variant="outlined"
+                required
+                fullWidth
+              />
+              <TextField
+                label="Mot de passe"
+                type="password"
+                variant="outlined"
+                required
+                fullWidth
+              />
 
-              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+              >
                 Se connecter
               </Button>
             </form>
 
             <Typography textAlign="center" mt={2}>
               Pas encore de compte ?{" "}
-              <Link href="/register" style={{ color: "#1976d2", textDecoration: "none" }}>
+              <Link
+                href="/register"
+                style={{ color: "#1976d2", textDecoration: "none" }}
+              >
                 S'inscrire
               </Link>
             </Typography>
