@@ -1,7 +1,7 @@
-
-
 const flight_data = async (req, res) => {
     try {
+        const { flight_number } = req.params;
+
         const flightsdata = [
             {
                 "flight_number": "AF123",
@@ -13,6 +13,7 @@ const flight_data = async (req, res) => {
                 "arr_icao": "KJFK",
                 "lat": 40.6413,
                 "lng": -73.7781,
+                "cap": 121,
                 "status": "en vol",
                 "dep_gate": "A34",
                 "arr_terminal": "4",
@@ -42,6 +43,7 @@ const flight_data = async (req, res) => {
                 "arr_icao": "EGLL",
                 "lat": 51.4706,
                 "lng": -0.4619,
+                "cap": 12,
                 "status": "atterri",
                 "dep_gate": "B12",
                 "arr_terminal": "5",
@@ -71,6 +73,7 @@ const flight_data = async (req, res) => {
                 "arr_icao": "OMDB",
                 "lat": 25.2528,
                 "lng": 55.3644,
+                "cap": 32,
                 "status": "en vol",
                 "dep_gate": "C56",
                 "arr_terminal": "3",
@@ -92,11 +95,17 @@ const flight_data = async (req, res) => {
             }
         ];
 
-        res.json(flightsdata);
-    } catch (err) {
-        res.status(500).json({ error: 'Erreur lors de la récupération des récepteur adsb.' });
-    }
+        // Recherche du vol par numéro
+        const flight = flightsdata.find(f => f.flight_number === flight_number);
 
+        if (flight) {
+            res.json(flight);
+        } else {
+            res.status(404).json({ error: "Vol non trouvé" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Erreur lors de la récupération des informations du vol." });
+    }
 };
 
-module.exports = { flight_data }
+module.exports = { flight_data };

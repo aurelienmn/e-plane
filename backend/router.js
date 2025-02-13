@@ -20,4 +20,7 @@ router.get('/api_response_exemple', ApiController.response_api);
 // exemple flight infos
 router.get('/flightsdata', Selectdata.flight_data);
 
+// récipére un vol
+router.get('/flightsdata/:flight_number', Selectdata.flight_data);
+
 module.exports = router;
