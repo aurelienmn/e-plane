@@ -1,7 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from 'react'
-import {Avatar,Box,Button,Card,CardContent,Container,TextField,Typography,} from "@mui/material";
+import { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 const Page = () => {
   const [user, setUser] = useState({
@@ -13,16 +22,16 @@ const Page = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user);
 
-    // Gère les changements dans le formulaire
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-  
-    // Sauvegarde les modifications
-    const handleSave = () => {
-      setUser(formData);
-      setIsEditing(false);
-    };
+  // Gère les changements dans le formulaire
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Sauvegarde les modifications
+  const handleSave = () => {
+    setUser(formData);
+    setIsEditing(false);
+  };
   return (
     <Container maxWidth="sm">
       <Card sx={{ mt: 4, p: 3, boxShadow: 3 }}>
@@ -90,7 +99,7 @@ const Page = () => {
         </CardContent>
       </Card>
     </Container>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

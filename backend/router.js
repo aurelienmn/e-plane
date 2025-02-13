@@ -16,6 +16,9 @@ router.get('/flights_at_update', ApiController.getflight_to_update);
 // exemle de réponse d'api
 router.get('/api_response_exemple', ApiController.response_api);
 
+// recherche par flight number
+router.get('/flightsdata/:flight_number', Selectdata.flight_data);
+
 
 // exemple flight infos
 router.get('/flightsdata', Selectdata.flight_data);
