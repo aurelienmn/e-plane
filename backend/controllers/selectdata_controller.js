@@ -109,4 +109,3 @@ const flight_data = async (req, res) => {
 };
 
 module.exports = { flight_data };
- 

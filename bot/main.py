@@ -1,20 +1,7 @@
 from datetime import datetime
-import requests
+from config import ADSB_LIST_URL, API_LIST_URL, FLIGHTS_LIST_URL
+from services import fetch_data
 
-# config
-ADSB_LIST_URL = "http://localhost:5252/adsb_list"
-API_LIST_URL = "http://localhost:5252/external_api"
-FLIGHTS_LIST_URL = "http://localhost:5252/flights_at_update"
-
-def fetch_data(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        return data if data else False
-    except requests.RequestException as e:
-        print(f"Erreur lors de la récupération {url}: {e}")
-        return False
 
 def main():
     print("Starting script...", datetime.now())
@@ -30,7 +17,6 @@ def main():
     ]:
         if service is False:
             print(message)
-    
     return
     
 if __name__ == "__main__":

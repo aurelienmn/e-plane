@@ -23,4 +23,7 @@ router.get('/flightsdata/:flight_number', Selectdata.flight_data);
 // exemple flight infos
 router.get('/flightsdata', Selectdata.flight_data);
 
+// récipére un vol
+router.get('/flightsdata/:flight_number', Selectdata.flight_data);
+
 module.exports = router;
