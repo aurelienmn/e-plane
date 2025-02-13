@@ -1,19 +1,12 @@
 "use client"
 import Link from 'next/link';
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import {AppBar, Box , Toolbar , IconButton , Typography, Menu, Container , Avatar , Button, Tooltip , MenuItem} from '@mui/material';
+//--------------- Icon material ui ----------------------
 import FlightLandIcon from '@mui/icons-material/FlightLand';
+import MenuIcon from '@mui/icons-material/Menu';
+
+//---------------- HOOKS ---------------------
 import { useState } from 'react';
 import { useRouter } from "next/navigation";  
 
@@ -24,7 +17,7 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const [username,setUsername] = useState("Aexl")
+  const [username,setUsername] = useState("")
 
   const router = useRouter(); 
 
