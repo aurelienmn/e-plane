@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker} from "react-leaflet";
-import { Box , Card, CardContent, Typography, LinearProgress } from "@mui/material";
+import { Box , Card, CardContent, Typography, LinearProgress , Fab , Modal , Input , Container } from "@mui/material";
+import AddIcon  from '@mui/icons-material/Add';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -10,6 +11,10 @@ const AirplaneMap = () => {
   const [heading, setHeading] = useState(135); // Angle initial
 
   const [progress, setProgress] = useState(0);
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   //data dans le localStorage
   const [data, setData] = useState("");
@@ -65,27 +70,30 @@ const AirplaneMap = () => {
       setData("No data found");
     }
     console.log(data)
-    
+
     const interval = setInterval(() => {
       setHeading((prev) => (prev + 90) % 360); // Rotation toutes les 2s
     }, 2000);
     return () => clearInterval(interval);
   }, []);
 
-  // Infos du vol
-const flightInfo = {
-    flightNumber: "AF001",
-    airline: "Air France",
-    departure: "Paris (CDG)",
-    arrival: "New York (JFK)",
-    departureTime: "12:30",
-    arrivalTime: "15:45",
-    status: "En vol", // Peut être: "Retardé", "Atterri", "Annulé"
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius: 10,
+    color:"black",
+    boxShadow: 24,
+
+    p: 4,
   };
 
   return (
     <div>
-      <MapContainer center={position} zoom={7} style={{ height: "800px" }}>
+      <MapContainer center={position} zoom={7} style={{ height: "840px" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
@@ -150,6 +158,36 @@ const flightInfo = {
           </CardContent>
         </Card>
       </Box>
+        <Fab sx={{position:'absolute', right:20 , bottom:20}} onClick={() => {handleOpen()}}>
+            <AddIcon/> 
+        </Fab>
+
+        {/*-------------------Modal------------------------*/}
+        <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+            <Container sx={{display:'flex', flexFlow:'column',backgroundColor:"gray", padding:4}}>
+                <Input/>
+                <Input/>
+            </Container>
+            <Container>
+                <Input/>
+                <Fab>
+                    <AddIcon/> 
+                </Fab>
+            </Container>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
     </div>
   );
 };
