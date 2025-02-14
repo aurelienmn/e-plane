@@ -15,7 +15,7 @@ import {
   MenuItem,
 } from "@mui/material";
 //--------------- Icon material ui ----------------------
-import FlightLandIcon from "@mui/icons-material/FlightLand";
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import MenuIcon from "@mui/icons-material/Menu";
 
 //---------------- HOOKS ---------------------
@@ -33,7 +33,7 @@ function ResponsiveAppBar() {
     null,
   );
 
-  const [username, setUsername] = useState("Alex");
+  const [username, setUsername] = useState();
 
   const router = useRouter();
 
@@ -73,7 +73,6 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <FlightLandIcon />
           <Typography
             variant="h6"
             noWrap
@@ -88,7 +87,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Air&apos;Nest
+            myplane
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
