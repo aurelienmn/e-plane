@@ -1,7 +1,7 @@
 "use client"; // Nécessaire pour un composant client
 
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation"; // Import depuis next/navigation
+import { useRouter } from "next/navigation"; // Import depuis next/navigation
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   Table,
