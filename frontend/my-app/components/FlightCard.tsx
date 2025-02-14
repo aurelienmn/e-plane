@@ -1,86 +1,182 @@
-import {
-  Card,
-  CardContent,
-  Container,
-  Typography,
-  Button,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
+"use client"
 
-export default function FlightCard() {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { IconButton, Button, TextField, Card, CardContent, Typography, Box } from "@mui/material";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import FlightLandIcon from "@mui/icons-material/FlightLand";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MapIcon from "@mui/icons-material/Map";
+import FlightIcon from "@mui/icons-material/Flight";
+ 
+
+const flightsData = Array.from({ length: 20 }, (_, i) => ({
+  flight_number: `FL${100 + i}`,
+  dep_iata: ["Paris", "Londres", "Tokyo", "New York", "Dubaï"][i % 5],
+  arr_iata: ["Los Angeles", "Pékin", "Berlin", "Madrid", "Sydney"][i % 5],
+  time: `${10 + i % 12}:00`,
+  status: ["À l'heure", "En retard", "Annulé"][i % 3],
+  delay: i % 3 === 1 ? `${(10 + i % 12) + 1}:15` : null,
+  details: {
+    company: ["Air France", "British Airways", "Lufthansa", "Emirates", "Qatar Airways"][i % 5],
+    terminal: `T${(i % 3) + 1}`,
+    gate: `G${100 + i}`,
+    duration: `${6 + (i % 4)}h ${(i % 60)}min`,
+  },
+}));
+
+function FlightCard({ flight }) {
+  const [showDetails, setShowDetails] = useState(false);
+
   const router = useRouter();
+
+  const HandleSave = (flightData) => {
+    console.log(flightData);
+    localStorage.setItem("flightData", JSON.stringify(flightData));
+    router.push("/map");
+  };
+
+  const statusColors = {
+    "À l'heure": "#4caf50",
+    "En retard": "#ff9800",
+    "Annulé": "#e74c3c",
+  };
+
   return (
-    <Card sx={{ margin: "auto", padding: 2 }}>
-      <CardContent sx={{ display: "flex", flexDirection: "column" }}>
-        {/* Grid Container */}
-        <Container
+    <>
+    <Card 
+    sx={{ mb: 2, p: 2, borderRadius:3 , width:500 , borderLeft: `6px solid ${statusColors[flight.status]}`,
+    "&:hover": {
+      transform: 'translateY(-5px)', // Slightly enlarge button
+      boxShadow: "0px 10px 24px rgba(0, 0, 0, 0.15)", // Add shadow
+    }
+    }}>
+      <Box display="flex" justifyContent="space-between">
+        <Typography variant="h6">
+        <FlightIcon color="primary" sx={{verticalAlign: "middle", mr: 1 }} />Vol {flight.flight_number}   
+        </Typography>
+        <Typography
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "center",
+            backgroundColor: statusColors[flight.status],
+            display:'flex',
+            alignItems:'center',
+            color: "white",
+            p: "4px 12px",
+            borderRadius: "16px",
+            fontSize: "12px",
           }}
         >
-          {/* Colonne 1: Hours */}
-          <Container sx={{ display: "flex", justifyContent: "center" }}>
-            <Typography variant="body1">Hours</Typography>
-          </Container>
+          {flight.status}
+        </Typography>
+      </Box>
 
-          {/* Colonne 2: Fly Number */}
-          <Container sx={{ display: "flex", justifyContent: "center" }}>
-            <Typography variant="body1">Fly number</Typography>
-          </Container>
+      <Box display="flex" alignItems="center" gap={1} mt={1}>
+        <FlightTakeoffIcon color="primary" />
+        <Typography variant="body2">Départ : {flight.dep_iata}</Typography>
+      </Box>
 
-          {/* Colonne 3: Siege */}
-          <Container
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: 1,
-            }}
-          >
-            <Typography variant="body1">Siege</Typography>
-          </Container>
+      <Box display="flex" alignItems="center" gap={1} mt={1}>
+        <FlightLandIcon color="primary" />
+        <Typography variant="body2">Arrivée : {flight.arr_iata}</Typography>
+      </Box>
 
-          {/* Colonne 4: Gate */}
-          <Container
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="body1">Gate</Typography>
-          </Container>
+      <Box display="flex" alignItems="center" gap={1} mt={1}>
+        <AccessTimeIcon color="primary" />
+        {flight.status === "En retard" && flight.delay ? (
+          <>
+            <Typography variant="body2" sx={{ textDecoration: "line-through", color: "red" }}>
+              {flight.time}
+            </Typography> 
+            <p>➡️</p>
+            <Typography variant="body2" sx={{ color: "green", fontWeight: "bold" }}>
+              {flight.delay}
+            </Typography>
+          </>
+        ) : (
+          <Typography variant="body2">{flight.time}</Typography>
+        )}
+      </Box>
 
-          {/* Colonne 5: Status */}
-          <Container
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              color: "white",
-              backgroundColor: "blue",
-              padding: "8px",
-              borderRadius: "5px",
-            }}
-          >
-            <Typography variant="body1">Status</Typography>
-          </Container>
-          <Container>
-            <Button
-              variant="contained"
-              onClick={() => {
-                router.push("/map");
-              }}
-            >
-              Voir plus
-            </Button>
-          </Container>
-        </Container>
-      </CardContent>
+      <Box display="flex" justifyContent="center" gap={2} mt={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{borderRadius:10}}
+          startIcon={<ExpandMoreIcon />}
+          onClick={() => setShowDetails(!showDetails)}
+        >
+          Voir plus
+        </Button>
+        <Button variant="contained" color="success" sx={{borderRadius:10}} startIcon={<MapIcon />} onClick={() => {HandleSave(flight)}}>
+          Voir sur la carte
+        </Button>
+      </Box>
+
+      {showDetails && (
+        <CardContent sx={{ mt: 2, borderTop: "1px dashed #ccc", pt: 1 }}>
+          <Typography variant="body2">✈️ Compagnie : {flight.details.company}</Typography>
+          <Typography variant="body2">🏨 Terminal : {flight.details.terminal}</Typography>
+          <Typography variant="body2">🚪 Porte : {flight.details.gate}</Typography>
+          <Typography variant="body2">⏳ Durée : {flight.details.duration}</Typography>
+        </CardContent>
+      )}
     </Card>
+    </>
+    
   );
 }
+
+function Pagination({ currentPage, totalPages, onPageChange }) {
+  return (
+    <Box display="flex" justifyContent="center" gap={2} mt={3}>
+      <Button disabled={currentPage === 1} onClick={() => onPageChange(-1)}>⬅️ Précédent</Button>
+      <Button disabled={currentPage === totalPages} onClick={() => onPageChange(1)}>Suivant ➡️</Button>
+    </Box>
+  );
+}
+
+function SearchBar({ setSearchTerm }) {
+  return (
+    <TextField
+      placeholder="🔍 Rechercher un vol..."
+      variant="outlined"
+      onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+      sx={{ my: 2 , width: 600 , margin:4, backgroundColor:'white', borderRadius: "40px",
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "40px",
+        },
+      }}
+    />
+  );
+}
+
+function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const flightsPerPage = 5;
+
+  const filteredFlights = flightsData.filter(
+    (flight) =>
+      flight.flight_number.toLowerCase().includes(searchTerm) ||
+      flight.dep_iata.toLowerCase().includes(searchTerm) ||
+      flight.arr_iata.toLowerCase().includes(searchTerm)
+  );
+
+  const totalPages = Math.ceil(filteredFlights.length / flightsPerPage);
+  const displayedFlights = filteredFlights.slice((currentPage - 1) * flightsPerPage, currentPage * flightsPerPage);
+
+  return (
+    <Box sx={{ p: 3, display:'flex' , flexFlow:'column', alignItems:'center' ,maxWidth: "600px", mx: "auto"}}>
+      <SearchBar setSearchTerm={setSearchTerm} />
+      {displayedFlights.length === 0 ? (
+        <Typography textAlign="center" color="text.secondary">Aucun vol trouvé.</Typography>
+      ) : (
+        displayedFlights.map((flight) => <FlightCard key={flight.flight_number} flight={flight} />)
+      )}
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(step) => setCurrentPage(currentPage + step)} />
+    </Box>
+  );
+}
+
+export default App;
