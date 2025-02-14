@@ -62,7 +62,7 @@ const AirplaneMap = () => {
       })
       .then((data) => {
         setData(data);
-        setPosition([data.lat,data.lng])
+        // setPosition([data.lat,data.lng])
         console.log("data from fetch is : ", data);
         //setLoading(false);
       })

@@ -10,6 +10,8 @@ CREATE TABLE adsb_info (
     base_url VARCHAR(512) NOT NULL;
 );
 
+
+
 -- Création de la table qui stocke les API
 CREATE TABLE api_info (
     id SERIAL PRIMARY KEY,
@@ -25,32 +27,25 @@ CREATE TABLE api_mapping (
     api_path VARCHAR(255) NOT NULL
 );
 
--- Insertion des informations de l'API "airlabs"
-INSERT INTO api_info (name_api, base_url) VALUES ('airlabs', 'https://airlabs.example.com') RETURNING id;
+-- Création de la table user
+CREATE TABLE "users" (
+    "id" SERIAL PRIMARY KEY,
+    "email" VARCHAR(255) UNIQUE NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "phone" VARCHAR(20),
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Récupération de l'ID de l'API "airlabs"
-WITH airlabs_id AS (
-    SELECT id FROM api_info WHERE name_api = 'airlabs'
-)
--- Insertion du mapping pour l'API "airlabs"
-INSERT INTO api_mapping (api_id, db_field, api_path)
-SELECT id, 'flight_number', 'flight.number' FROM airlabs_id UNION ALL
-SELECT id, 'airline_iata', 'airline.iata' FROM airlabs_id UNION ALL
-SELECT id, 'status', 'flight_status' FROM airlabs_id UNION ALL
-SELECT id, 'dep_iata', 'departure.iata' FROM airlabs_id UNION ALL
-SELECT id, 'dep_terminal', 'departure.terminal' FROM airlabs_id UNION ALL
-SELECT id, 'dep_gate', 'departure.gate' FROM airlabs_id UNION ALL
-SELECT id, 'dep_delayed', 'departure.delay' FROM airlabs_id UNION ALL
-SELECT id, 'dep_time', 'departure.scheduled' FROM airlabs_id UNION ALL
-SELECT id, 'dep_estimated', 'departure.estimated' FROM airlabs_id UNION ALL
-SELECT id, 'dep_actual', 'departure.actual' FROM airlabs_id UNION ALL
-SELECT id, 'arr_iata', 'arrival.iata' FROM airlabs_id UNION ALL
-SELECT id, 'arr_icao', 'arrival.icao' FROM airlabs_id UNION ALL
-SELECT id, 'arr_terminal', 'arrival.terminal' FROM airlabs_id UNION ALL
-SELECT id, 'arr_gate', 'arrival.gate' FROM airlabs_id UNION ALL
-SELECT id, 'arr_baggage', 'arrival.baggage' FROM airlabs_id UNION ALL
-SELECT id, 'arr_time', 'arrival.scheduled' FROM airlabs_id UNION ALL
-SELECT id, 'arr_estimated', 'arrival.estimated' FROM airlabs_id UNION ALL
-SELECT id, 'arr_actual', 'arrival.actual' FROM airlabs_id UNION ALL
-SELECT id, 'lat', 'live.latitude' FROM airlabs_id UNION ALL
-SELECT id, 'lng', 'live.longitude' FROM airlabs_id;
+--  Création del la table vols à suivre
+CREATE TABLE "tracked_flights" (
+    "id" SERIAL PRIMARY KEY,
+    "user_id" INTEGER REFERENCES "users"("id") ON DELETE CASCADE,
+    "flight_iata" VARCHAR(10) NOT NULL,
+    "flight_icao" VARCHAR(10),
+    "departure_iata" VARCHAR(5),
+    "arrival_iata" VARCHAR(5),
+    "status" VARCHAR(20) DEFAULT 'scheduled',
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
