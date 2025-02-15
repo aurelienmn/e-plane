@@ -38,6 +38,6 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 
 // Déconnexion
-router.post('/logout', roleMiddleware(), authController.logout);
+router.post('/logout', roleMiddleware, authController.logout);
 
 module.exports = router;

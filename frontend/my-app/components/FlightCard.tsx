@@ -10,7 +10,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MapIcon from "@mui/icons-material/Map";
 import FlightIcon from "@mui/icons-material/Flight";
  
-
+/*
 const flightsData = Array.from({ length: 20 }, (_, i) => ({
   flight_number: `FL${100 + i}`,
   dep_iata: ["Paris", "Londres", "Tokyo", "New York", "Dubaï"][i % 5],
@@ -25,6 +25,7 @@ const flightsData = Array.from({ length: 20 }, (_, i) => ({
     duration: `${6 + (i % 4)}h ${(i % 60)}min`,
   },
 }));
+*/
 
 function FlightCard({ flight }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -156,7 +157,31 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const flightsPerPage = 5;
 
-  const filteredFlights = flightsData.filter(
+  const [flightData, setFlightData] = useState([]);
+
+  useEffect(() => {
+      console.log("use effect");
+      //--------------------Fetch de l'api---------------------
+      fetch(`http://localhost:5252/flightsdata`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setFlightData(data);
+          console.log("data from fetch is : ", data);
+          //setLoading(false);
+        })
+        .catch((err) => {
+          console.log("error is : ", err);
+          //setError(err.message);
+          // setLoading(false);
+        });
+    }, []);
+
+  const filteredFlights = flightData.filter(
     (flight) =>
       flight.flight_number.toLowerCase().includes(searchTerm) ||
       flight.dep_iata.toLowerCase().includes(searchTerm) ||
