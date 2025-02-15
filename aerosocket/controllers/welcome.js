@@ -1,6 +1,6 @@
 const welcome = async (req, res) => {
 
-    res.json({ message: "Welcome to Aerosocket Receiver" });
+    res.json({ message: "Bienvenue sur le serveur Aerosocket !" });
 };
 
 
