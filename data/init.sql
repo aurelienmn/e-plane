@@ -4,13 +4,10 @@ DROP TABLE IF EXISTS api_info;
 DROP TABLE IF EXISTS adsb_info;
 
 -- Création de la table qui stocke les adsb
-
 CREATE TABLE adsb_info (
-    id SERIAL PRIMARY KEY;
-    base_url VARCHAR(512) NOT NULL;
+    id SERIAL PRIMARY KEY,
+    base_url VARCHAR(512) NOT NULL
 );
-
-
 
 -- Création de la table qui stocke les API
 CREATE TABLE api_info (
@@ -27,7 +24,7 @@ CREATE TABLE api_mapping (
     api_path VARCHAR(255) NOT NULL
 );
 
--- Création de la table user
+-- Création de la table users
 CREATE TABLE "users" (
     "id" SERIAL PRIMARY KEY,
     "email" VARCHAR(255) UNIQUE NOT NULL,
@@ -37,7 +34,7 @@ CREATE TABLE "users" (
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---  Création del la table vols à suivre
+-- Création de la table vols à suivre
 CREATE TABLE "tracked_flights" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INTEGER REFERENCES "users"("id") ON DELETE CASCADE,
@@ -47,5 +44,20 @@ CREATE TABLE "tracked_flights" (
     "arrival_iata" VARCHAR(5),
     "status" VARCHAR(20) DEFAULT 'scheduled',
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Création de la fonction de mise à jour du champ 'updated_at'
+CREATE OR REPLACE FUNCTION update_flight_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Création du trigger pour mettre à jour 'updated_at' à chaque mise à jour d'une ligne
+CREATE TRIGGER update_flight_timestamp_trigger
+BEFORE UPDATE ON tracked_flights
+FOR EACH ROW
+EXECUTE FUNCTION update_flight_timestamp();
