@@ -27,7 +27,7 @@ router.get('/flightsdata/:flight_number', Selectdata.flight_data);
 router.get('/flightsdata', Selectdata.flight_data);
 
 // récipére un vol
-router.get('/flightsdata/:flight_number', Selectdata.flight_data);
+router.get('/flightone/:flight_number', Selectdata.flight_data_one);
 
 
 // ----------------- AUTHENTIFICATION -----------------

@@ -9,6 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MapIcon from "@mui/icons-material/Map";
 import FlightIcon from "@mui/icons-material/Flight";
+import BusinessIcon from '@mui/icons-material/Business';
  
 /*
 const flightsData = Array.from({ length: 20 }, (_, i) => ({
@@ -38,11 +39,15 @@ function FlightCard({ flight }) {
     router.push("/map");
   };
 
+
   const statusColors = {
-    "À l'heure": "#4caf50",
-    "En retard": "#ff9800",
-    "Annulé": "#e74c3c",
-  };
+    "on-time": "#2196f3",
+    "en-route": "#2196f3",
+    "landed": "#795548",
+    "scheduled": "#4caf50",
+    "delayed": "#ff9800",
+    "canceled": "#e74c3c"
+};
 
   return (
     <>
@@ -83,21 +88,23 @@ function FlightCard({ flight }) {
       </Box>
 
       <Box display="flex" alignItems="center" gap={1} mt={1}>
-        <AccessTimeIcon color="primary" />
-        {flight.status === "En retard" && flight.delay ? (
-          <>
-            <Typography variant="body2" sx={{ textDecoration: "line-through", color: "red" }}>
-              {flight.time}
-            </Typography> 
-            <p>➡️</p>
-            <Typography variant="body2" sx={{ color: "green", fontWeight: "bold" }}>
-              {flight.delay}
+          <AccessTimeIcon color="primary" />
+          {flight.status === "En retard" && flight.delay ? (
+            <>
+              <Typography variant="body2" sx={{ textDecoration: "line-through", color: "red" }}>
+                {new Date(flight.dep_time_utc).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
+              </Typography> 
+              <p>➡️</p>
+              <Typography variant="body2" sx={{ color: "green", fontWeight: "bold" }}>
+                {flight.delay}
+              </Typography>
+            </>
+          ) : (
+            <Typography variant="body2">
+              {new Date(flight.dep_time_utc).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
             </Typography>
-          </>
-        ) : (
-          <Typography variant="body2">{flight.time}</Typography>
-        )}
-      </Box>
+          )}
+          </Box>
 
       <Box display="flex" justifyContent="center" gap={2} mt={2}>
         <Button
@@ -116,10 +123,10 @@ function FlightCard({ flight }) {
 
       {showDetails && (
         <CardContent sx={{ mt: 2, borderTop: "1px dashed #ccc", pt: 1 }}>
-          <Typography variant="body2">✈️ Compagnie : {flight.details.company}</Typography>
-          <Typography variant="body2">🏨 Terminal : {flight.details.terminal}</Typography>
-          <Typography variant="body2">🚪 Porte : {flight.details.gate}</Typography>
-          <Typography variant="body2">⏳ Durée : {flight.details.duration}</Typography>
+          <Typography variant="body2"><BusinessIcon></BusinessIcon> Compagnie : </Typography>
+          <Typography variant="body2"> Terminal : {flight.dep_terminal}</Typography>
+          <Typography variant="body2">🚪 Porte : {flight.dep_gate}</Typography>
+          <Typography variant="body2">⏳ Durée : {flight.duration}</Typography>
         </CardContent>
       )}
     </Card>
