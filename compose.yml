@@ -1,0 +1,7 @@
+services:
+  aerosocket:
+    build: ./aerosocket
+    ports: 
+      - "6569:6569"
+    environment:
+      - PORT=6569
