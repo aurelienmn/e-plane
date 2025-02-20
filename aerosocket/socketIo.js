@@ -1,6 +1,9 @@
 const { updateADSBData } = require("./controllers/adsbController");
+const { socketAuth } = require("./middlewares/authMiddleware");
 
 const initializeSocket = (io) => {
+  io.use(socketAuth); // Protection des connexions Socket.IO
+
   io.on("connection", (socket) => {
     console.log(`Utilisateur connecté : ${socket.id}`);
 
