@@ -1,40 +1,43 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const dotenv = require('dotenv');
-const router = require('./router');
-// const connectDB = require('./config/db');
-const initializeSocket = require('./socketIo')
-const cors = require('cors');
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+require("dotenv").config();
 
+console.log("Port défini dans .env :", process.env.PORT);
 
-dotenv.config();
+const cors = require("cors");
+const router = require("./router");
+const initializeSocket = require("./socketIo");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
-    }
+  cors: {
+    origin: "*", // Autorise toutes les origines
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  },
 });
 
-app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-}));
+// Middleware CORS : permet l'accès depuis n'importe quelle origine
+app.use(
+  cors({
+    origin: "*", // Accepte toutes les URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
+// Middleware JSON pour gérer les requêtes en JSON
 app.use(express.json());
 
-app.use('/', router);
+// Routes API (sans protection API Key)
+app.use("/", router);
 
-
-// connectDB();
-
+// Initialisation de Socket.IO (protégé par API Key)
 initializeSocket(io);
 
+// Lancement du serveur
 const PORT = process.env.PORT || 6569;
 server.listen(PORT, () => {
-    console.log(`Serveur lancé sur http://localhost:${PORT}`);
+  console.log(`Serveur lancé sur http://localhost:${PORT}`);
 });

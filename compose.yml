@@ -1,7 +1,46 @@
+version: '3.8'
+
 services:
   aerosocket:
     build: ./aerosocket
+    container_name: aerosocket
+    restart: always
     ports: 
       - "6569:6569"
     environment:
       - PORT=6569
+      - DB_HOST=db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=e_plane
+      - DB_PORT=5432
+    env_file:
+      - ./aerosocket/.env
+    volumes:
+      - ./aerosocket:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    container_name: eplane_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: e_plane
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./aerosocket/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d e_plane"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+
+volumes:
+  postgres_data:
