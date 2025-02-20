@@ -3,8 +3,6 @@ const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
 
-console.log("Port défini dans .env :", process.env.PORT);
-
 const cors = require("cors");
 const router = require("./router");
 const initializeSocket = require("./socketIo");
