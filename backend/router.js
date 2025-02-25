@@ -5,7 +5,7 @@ const AdsbController = require("./controllers/adsb_controller");
 const Selectdata = require("./controllers/selectdata_controller");
 const Luggage = require("./controllers/luggages_controller");
 const authController = require("./controllers/authController");
-const roleMiddleware = require("./middleware/authMiddleware");
+const authMiddleware = require("./middleware/authMiddleware");
 
 // ----------------- GESTION DES DONNÉES DE VOL & API EXTERNES -----------------
 
@@ -31,7 +31,7 @@ router.get("/flightone/:flight_number", Selectdata.flight_data_one);
 
 // ----------------- BAGGAGE -----------------
 // fake data
-router.get("/allluggages", Luggage.luggage);
+router.get("/allluggages", authMiddleware, Luggage.luggage);
 
 // ----------------- AUTHENTIFICATION -----------------
 // Inscription pour les deux rôles
@@ -41,6 +41,6 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 
 // Déconnexion
-router.post("/logout", roleMiddleware, authController.logout);
+router.post("/logout", authMiddleware, authController.logout);
 
 module.exports = router;
