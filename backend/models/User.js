@@ -1,5 +1,5 @@
 const db = require("../config/db");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs"); // Assure-toi d'utiliser bcryptjs comme dans authController
 
 const findUserByEmail = async (email) => {
   try {
@@ -13,14 +13,20 @@ const findUserByEmail = async (email) => {
   }
 };
 
-const createUser = async ({ email, password, phone }) => {
+const createUser = async ({
+  email,
+  password,
+  first_name,
+  last_name,
+  phone,
+}) => {
   try {
     const query = `
-            INSERT INTO users (email, password, phone, created_at, updated_at)
-            VALUES ($1, $2, $3, NOW(), NOW())
-            RETURNING id
-        `;
-    const values = [email, password, phone];
+      INSERT INTO users (email, password, first_name, last_name, phone, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+      RETURNING id
+    `;
+    const values = [email, password, first_name, last_name, phone];
     const result = await db.query(query, values);
     return result.rows[0].id;
   } catch (error) {
@@ -29,19 +35,33 @@ const createUser = async ({ email, password, phone }) => {
   }
 };
 
-const updateUser = async (id, { email, password, phone }) => {
+const updateUser = async (
+  id,
+  { email, password, first_name, last_name, phone }
+) => {
   try {
-    let hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+    let hashedPassword = null;
+
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
     const query = `
-            UPDATE users
-            SET email = COALESCE($1, email),
-                password = COALESCE($2, password),
-                phone = COALESCE($3, phone),
-                updated_at = NOW()
-            WHERE id = $4
-            RETURNING *
-        `;
-    const values = [email, hashedPassword, phone, id];
+      UPDATE users
+      SET email = COALESCE($1, email),
+          ${password ? "password = $2," : ""} 
+          first_name = COALESCE($3, first_name),
+          last_name = COALESCE($4, last_name),
+          phone = COALESCE($5, phone),
+          updated_at = NOW()
+      WHERE id = $6
+      RETURNING *;
+    `;
+
+    const values = password
+      ? [email, hashedPassword, first_name, last_name, phone, id]
+      : [email, first_name, last_name, phone, id];
+
     const result = await db.query(query, values);
     return result.rows[0];
   } catch (error) {

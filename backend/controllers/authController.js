@@ -1,41 +1,41 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/User");
-const { use } = require("react");
 
 // Fonction pour vérifier les champs vides
-const validateFields = (email, phone, password, verif_password) => {
-  if (!email) {
-    return "Veuillez saisir un email.";
-  }
-  if (!phone) {
-    return "Veuillez saisir un numéro de téléphone.";
-  }
-  if (!password) {
-    return "Veuillez saisir un mot de passe.";
-  }
-  if (!verif_password) {
-    return "Veuillez confirmer le mot de passe.";
-  }
+const validateFields = (
+  email,
+  phone,
+  password,
+  verif_password,
+  first_name,
+  last_name
+) => {
+  if (!email) return "Veuillez saisir un email.";
+  if (!first_name) return "Veuillez saisir un prénom.";
+  if (!last_name) return "Veuillez saisir un nom.";
+  if (!phone) return "Veuillez saisir un numéro de téléphone.";
+  if (!password) return "Veuillez saisir un mot de passe.";
+  if (!verif_password) return "Veuillez confirmer le mot de passe.";
   return null;
 };
 
 // Fonction pour vérifier le format de l'email
-const validateEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // Fonction pour vérifier la complexité du mot de passe
-const validatePasswordStrength = (password) => {
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum 8 caractères, une lettre et un chiffre
-  return passwordRegex.test(password);
-};
+const validatePasswordStrength = (password) =>
+  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
   try {
-    const user = await userModel.findUserByEmail(email);
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email et mot de passe requis." });
+    }
+
+    const user = await userModel.findUserByEmail(email.trim());
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
@@ -43,6 +43,13 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Mot de passe incorrect" });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET n'est pas défini dans l'environnement.");
+      return res
+        .status(500)
+        .json({ message: "Erreur de configuration serveur." });
     }
 
     const token = jwt.sign(
@@ -59,11 +66,25 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, phone, password, verif_password } = req.body;
+  let { email, phone, password, verif_password, first_name, last_name } =
+    req.body;
 
   try {
+    // Nettoyage des entrées utilisateur
+    email = email?.trim();
+    phone = phone?.trim();
+    first_name = first_name?.trim();
+    last_name = last_name?.trim();
+
     // Vérification des champs vides
-    const fieldError = validateFields(email, phone, password, verif_password);
+    const fieldError = validateFields(
+      email,
+      phone,
+      password,
+      verif_password,
+      first_name,
+      last_name
+    );
     if (fieldError) {
       return res.status(400).json({ message: fieldError });
     }
@@ -88,16 +109,21 @@ const register = async (req, res) => {
         .json({ message: "Les mots de passe ne correspondent pas." });
     }
 
+    // Vérifier si l'utilisateur existe déjà
     const existingUser = await userModel.findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé." });
     }
 
+    // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Créer l'utilisateur
     await userModel.createUser({
       email,
       password: hashedPassword,
+      first_name,
+      last_name,
       phone,
     });
 
