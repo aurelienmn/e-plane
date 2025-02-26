@@ -19,6 +19,24 @@ CREATE TABLE "api_keys" (
     "expires_at" TIMESTAMP DEFAULT NULL
 );
 
+
+CREATE TABLE "flights_adsb" (
+    "id" SERIAL PRIMARY KEY,
+    "flight_number" VARCHAR(20) NOT NULL, -- Numéro de vol (ex: 123)
+    "flight_icao" VARCHAR(20) NOT NULL,  -- Code ICAO complet du vol (ex: AFR123)
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
+    "altitude" INTEGER,
+    "speed" DOUBLE PRECISION,  -- Vitesse en nœuds ou km/h
+    "heading" DOUBLE PRECISION,
+    "squawk" VARCHAR(10),
+    "seen" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Dernière mise à jour
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (flight_number, flight_icao) -- Ajout de la contrainte UNIQUE
+);
+
+
+
 CREATE TABLE "bags" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INTEGER NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
