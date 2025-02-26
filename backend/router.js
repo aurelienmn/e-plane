@@ -5,6 +5,7 @@ const AdsbController = require("./controllers/adsb_controller");
 const Selectdata = require("./controllers/selectdata_controller");
 const Luggage = require("./controllers/luggages_controller");
 const authController = require("./controllers/authController");
+const apiKeyController = require("./controllers/apiKeyController");
 const authMiddleware = require("./middleware/authMiddleware");
 
 // ----------------- GESTION DES DONNÉES DE VOL & API EXTERNES -----------------
@@ -28,6 +29,12 @@ router.get("/flightsdata", Selectdata.flight_data);
 
 // récipére un vol
 router.get("/flightone/:flight_number", Selectdata.flight_data_one);
+
+// ----------------- AEROSOCKET -----------------
+// Routes API publiques
+router.post("/keys", authMiddleware, apiKeyController.generateApiKey);
+router.get("/keys", authMiddleware, apiKeyController.listApiKeys);
+router.delete("/keys/:id", authMiddleware, apiKeyController.removeApiKey);
 
 // ----------------- BAGGAGE -----------------
 // fake data
